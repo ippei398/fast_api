@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Response, Request, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi_csrf_protect import CsrfProtect
-from models.database import db_signup, db_login
-from models.schemas import UserBody, SuccessMsg, UserInfo, Csrf
+from database import db_signup, db_login
+from schemas import UserBody, SuccessMsg, UserInfo, Csrf
 from auth_utils import AuthJwtCsrf
 
 

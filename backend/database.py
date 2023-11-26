@@ -4,10 +4,12 @@ from motor import motor_asyncio
 from bson.objectid import ObjectId
 from typing import Union
 from auth_utils import AuthJwtCsrf
+import asyncio
 
 MONGO_API_KEY = config('MONGO_API_KEY')
 
 client = motor_asyncio.AsyncIOMotorClient(MONGO_API_KEY)
+client.get_io_loop = asyncio.get_event_loop
 database = client.fast_api_db
 collection_todo = database.todo
 collection_user = database.user

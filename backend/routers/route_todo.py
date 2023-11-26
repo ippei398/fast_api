@@ -4,8 +4,8 @@ from fastapi_csrf_protect import CsrfProtect
 from starlette.status import HTTP_201_CREATED
 from typing import List
 from auth_utils import AuthJwtCsrf
-from models.schemas import Todo, TodoBody, SuccessMsg
-from models.database import db_create_todo, db_get_todos, db_get_single_todo, db_update_todo, db_delete_todo
+from schemas import Todo, TodoBody, SuccessMsg
+from database import db_create_todo, db_get_todos, db_get_single_todo, db_update_todo, db_delete_todo
 
 router = APIRouter()
 auth = AuthJwtCsrf()
@@ -37,7 +37,7 @@ async def create_todo(
 
 @router.get('/api/todo', response_model=List[Todo])
 async def get_todos(request: Request):
-    auth.verify_jwt(request)
+    # auth.verify_jwt(request)
     res = await db_get_todos()
     return res
 
