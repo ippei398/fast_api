@@ -6,9 +6,13 @@ from typing import List
 from auth_utils import AuthJwtCsrf
 from schemas import Todo, TodoBody, SuccessMsg
 from database import db_create_todo, db_get_todos, db_get_single_todo, db_update_todo, db_delete_todo
+import logging
+import sys
+
 
 router = APIRouter()
 auth = AuthJwtCsrf()
+logger = logging.getLogger('logger')
 
 
 @router.post('/api/todo', response_model=Todo)
@@ -18,6 +22,7 @@ async def create_todo(
     data: TodoBody, 
     csrf_protect: CsrfProtect = Depends()
 ):
+    logger.info(f'start: {sys._getframe().f_code.co_name}')
     new_token = auth.verify_csrf_update_jwt(request, csrf_protect=csrf_protect, headers=request.headers)
     todo = jsonable_encoder(data)
     res = await db_create_todo(todo)
@@ -37,6 +42,7 @@ async def create_todo(
 
 @router.get('/api/todo', response_model=List[Todo])
 async def get_todos(request: Request):
+    logger.info(f'start: {sys._getframe().f_code.co_name}')
     # auth.verify_jwt(request)
     res = await db_get_todos()
     return res
@@ -44,6 +50,7 @@ async def get_todos(request: Request):
 
 @router.get('/api/todo/{id}', response_model=Todo)
 async def get_single_todo(request: Request, response: Response, id: str):
+    logger.info(f'start: {sys._getframe().f_code.co_name}')
     new_token, _ = auth.verify_update_jwt(request)
     response.set_cookie(
         key='access_key',
@@ -70,6 +77,7 @@ async def update_todo(
     data: TodoBody,
     csrf_protect: CsrfProtect = Depends()
 ):
+    logger.info(f'start: {sys._getframe().f_code.co_name}')
     new_token = auth.verify_csrf_update_jwt(request, csrf_protect=csrf_protect, headers=request.headers)
     todo = jsonable_encoder(data)
     res = await db_update_todo(id, data=todo)
@@ -96,6 +104,7 @@ async def delete_todo(
     id: str,
     csrf_protect: CsrfProtect = Depends()
 ):
+    logger.info(f'start: {sys._getframe().f_code.co_name}')
     new_token = auth.verify_csrf_update_jwt(request, csrf_protect=csrf_protect, headers=request.headers)
     res = await db_delete_todo(id)
     response.set_cookie(

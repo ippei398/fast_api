@@ -4,14 +4,18 @@ from fastapi_csrf_protect import CsrfProtect
 from database import db_signup, db_login
 from schemas import UserBody, SuccessMsg, UserInfo, Csrf
 from auth_utils import AuthJwtCsrf
+import logging
+import sys
 
 
 router = APIRouter()
 auth = AuthJwtCsrf()
+logger = logging.getLogger('logger')
 
 
 @router.get('/api/csrftoken', response_model=Csrf)
 def get_csrf_token(csrf_protect: CsrfProtect = Depends()):
+    logger.info(f'start: {sys._getframe().f_code.co_name}')
     csrf_token = csrf_protect.generate_csrf()
     res = {'csrf_token': csrf_token}
     return res
@@ -19,6 +23,7 @@ def get_csrf_token(csrf_protect: CsrfProtect = Depends()):
 
 @router.post('/api/register', response_model=UserInfo)
 async def signup(request: Request, user: UserBody, csrf_protect: CsrfProtect = Depends()):
+    logger.info(f'start: {sys._getframe().f_code.co_name}')
     csrf_token = csrf_protect.get_csrf_from_headers(request.headers)
     csrf_protect.validate_csrf(csrf_token)
     user = jsonable_encoder(user)
@@ -33,6 +38,7 @@ async def login(
     user: UserBody,
     csrf_protect: CsrfProtect = Depends()
 ):
+    logger.info(f'start: {sys._getframe().f_code.co_name}')
     csrf_token = csrf_protect.get_csrf_from_headers(request.headers)
     csrf_protect.validate_csrf(csrf_token)
     user = jsonable_encoder(user)
@@ -53,6 +59,7 @@ def logout(
     response: Response,
     csrf_protect: CsrfProtect = Depends()
 ):
+    logger.info(f'start: {sys._getframe().f_code.co_name}')
     csrf_token = csrf_protect.get_csrf_from_headers(request.headers)
     csrf_protect.validate_csrf(csrf_token)
     response.set_cookie(
@@ -67,6 +74,7 @@ def logout(
 
 @router.get('/api/user', response_model=UserInfo)
 def get_user_refresh_jwt(request: Request, response: Response):
+    logger.info(f'start: {sys._getframe().f_code.co_name}')
     new_token, subject = auth.verify_update_jwt(request)
     response.set_cookie(
         key='access_token',
