@@ -11,7 +11,7 @@ app = FastAPI()
 app.include_router(route_todo.router)
 app.include_router(route_auth.router)
 # アクセスを許可するURL
-origins = ['http://localhost:3000']
+origins = ['http://localhost:3000', 'http://172.30.192.98:3000']
 # CORSの設定
 app.add_middleware(
     CORSMiddleware,
